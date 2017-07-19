@@ -3,9 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <sys/socket>
+#include <sys/socket.h>
 
-#define BUF_SIZE 1024;
+#define BUF_SIZE 1024
 void error_handing(char *message);
 
 int main(int argc, char *argv[])
@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     char message[BUF_SIZE];
     int str_len, i;
     
-    struct sockaddr_in serv_adr, clnt_adr;
+    struct sockaddr_in serv_adr;
     socklen_t clnt_adr_sz;
 
     if(argc  != 3){
@@ -25,11 +25,11 @@ int main(int argc, char *argv[])
 
     memset(&serv_adr, 0, sizeof(serv_adr));  
     serv_adr.sin_family = AF_INET;
-    serv_adr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serv_adr.sin_port = hons(atoi(argv[1])); 
+    serv_adr.sin_addr.s_addr = inet_addr(argv[1]);
+    serv_adr.sin_port = htons(atoi(argv[2])); 
 
     if(connect(sock, (struct sockaddr*)&serv_adr, sizeof(serv_adr))==-1){
-        error_handing("bind() error");
+        error_handing("connec() error");
     }
 
     while(1)
