@@ -13,7 +13,8 @@ int main(int argc, char *argv[])
     int sock;
     char message[BUF_SIZE];
     int str_len, i;
-    
+    int recv_cnt;
+    int recv_len = 0; 
     struct sockaddr_in serv_adr;
     socklen_t clnt_adr_sz;
 
@@ -36,9 +37,17 @@ int main(int argc, char *argv[])
     {
         fputs("Input message ", stdout);
         fgets(message, BUF_SIZE, stdin);
-        write(sock, message, sizeof(message)); 
-        str_len = read(sock, message, BUF_SIZE - 1);
-        message[str_len] = 0;
+        str_len = write(sock, message, sizeof(message)); 
+        recv_len = 0;
+        while(recv_len < str_len)
+        {
+            recv_cnt = read(sock, &message[recv_len], BUF_SIZE-1);
+            if(recv_cnt == -1){
+                error_handing("read() error");
+            }
+            recv_len = recv_len + recv_cnt;
+        }
+        message[recv_len] = 0;
         printf("Message From server is %s \n", message);
     }
     close(sock);
